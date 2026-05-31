@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Weather App</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial, sans-serif;
+        }
+
+        body{
+            height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            background:linear-gradient(135deg,#74ebd5,#ACB6E5);
+        }
+
+        .container{
+            background:white;
+            padding:30px;
+            border-radius:15px;
+            text-align:center;
+            width:350px;
+            box-shadow:0 0 10px rgba(0,0,0,0.2);
+        }
+
+        input{
+            width:100%;
+            padding:10px;
+            margin-top:15px;
+            border:1px solid #ccc;
+            border-radius:5px;
+        }
+
+        button{
+            margin-top:15px;
+            padding:10px 20px;
+            border:none;
+            background:#007bff;
+            color:white;
+            border-radius:5px;
+            cursor:pointer;
+        }
+
+        button:hover{
+            background:#0056b3;
+        }
+
+        #weatherResult{
+            margin-top:20px;
+        }
+
+        h2{
+            margin-bottom:10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Weather App</h2>
+
+    <input type="text" id="city" placeholder="Enter City Name">
+
+    <button onclick="getWeather()">Get Weather</button>
+
+    <div id="weatherResult"></div>
+</div>
+
+<script>
+
+    // PASTE YOUR API KEY HERE
+    const API_KEY = "a3953e755e1744c5b6974754263105";
+
+    async function getWeather() {
+
+        const city = document.getElementById("city").value;
+
+        if(city === ""){
+            alert("Enter a city name");
+            return;
+        }
+
+        const url =
+         `https://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=${city}&aqi=yes`;
+
+try {
+
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if(data.error){
+        document.getElementById("weatherResult").innerHTML =
+        `<p>${data.error.message}</p>`;
+        return;
+    }
+
+    document.getElementById("weatherResult").innerHTML = `
+        <h3>${data.location.name}, ${data.location.country}</h3>
+        <p>🌡 Temperature: ${data.current.temp_c} °C</p>
+        <p>☁ Weather: ${data.current.condition.text}</p>
+        <p>💧 Humidity: ${data.current.humidity}%</p>
+        <p>🌬 Wind Speed: ${data.current.wind_kph} km/h</p>
+        <img src="https:${data.current.condition.icon}">
+    `;
+
+}
+catch(error){
+    console.log(error);
+    document.getElementById("weatherResult").innerHTML =
+    `<p>Error fetching weather data</p>`;
+}
+        
+    }
+
+</script>
+
+</body>
+</html>
